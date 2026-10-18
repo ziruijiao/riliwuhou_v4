@@ -13,11 +13,13 @@ const els = {
 };
 const ai = new LocalAI();
 const STORE='calendar-afternoon-v4';
-const AI_KEY_URL='https://goodemail.de5.net/txt.txt'; 
+const AI_KEY_URL='https://v4.riliwuhou.de5.net/txt.txt'; 
 const AI_API_URL='https://ai.zdzltop.com/v1/chat/completions';
 const AI_MODEL='zdzl-chat';                              // zdzl-chat 普通 / zdzl-reasoner 深度思考
 const AI_CONFIRM_MSG='每个ip每天只能调用1次，在设置里接入api后可以自行管理，你确定要调用吗？';
 const AI_DAILY_KEY='calendar-afternoon-ai-daily';
+const AI_DAY_MS=24*60*60*1000;
+const AI_EPOCH_TIME='1970-01-01T00:00:00.000Z';
 const IDENTITY_ANSWER='我是日历午后助手';
 let state={messages:[], threads:[], theme:'light', threadId:crypto.randomUUID?.()||String(Date.now())};
 
@@ -123,14 +125,29 @@ function extractApiKey(txt){
   const line=s.split(/\r?\n/).map(x=>x.trim()).find(x=>x && !x.startsWith('#') && !x.startsWith('//'));
   return line||'';
 }
-function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+function lastAiCallTime(){
+  const stored=localStorage.getItem(AI_DAILY_KEY);
+  if(stored===null){
+    localStorage.setItem(AI_DAILY_KEY,AI_EPOCH_TIME);
+    return 0;
+  }
+  const timestamp=Number(stored);
+  if(Number.isFinite(timestamp)) return timestamp;
+  const legacyTimestamp=Date.parse(stored);
+  if(Number.isFinite(legacyTimestamp)){
+    localStorage.setItem(AI_DAILY_KEY,new Date(legacyTimestamp).toISOString());
+    return legacyTimestamp;
+  }
+  localStorage.setItem(AI_DAILY_KEY,AI_EPOCH_TIME);
+  return 0;
+}
 
 async function callAI(){
   const raw=stripEmoji(els.input.value).trim();
   if(!raw){ els.input.focus(); return; }
   if(raw.includes('谁')){ await send(raw); return; }
   if(!confirm(AI_CONFIRM_MSG)) return;
-  if(localStorage.getItem(AI_DAILY_KEY)===todayStr()){
+  if(Date.now()-lastAiCallTime()<=AI_DAY_MS){
     alert('这个浏览器今天已经调用过 1 次 AI 了，明天再来吧。');
     return;
   }
@@ -174,6 +191,7 @@ async function callAI(){
   }catch(err){
     payload={ok:false,message:'调用 AI 失败：'+(err.message||String(err))};
   }
+  localStorage.setItem(AI_DAILY_KEY,new Date().toISOString());
   const wait=Math.max(300,800-(performance.now()-started)); await new Promise(r=>setTimeout(r,wait));
   els.typing.hidden=true; els.send.disabled=false; els.status.textContent='已就绪';
   if(payload.ok!==true){
@@ -184,7 +202,6 @@ async function callAI(){
     alert('AI 这次没有返回内容，请换个问题试试。');
     return;
   }
-  localStorage.setItem(AI_DAILY_KEY,todayStr());
   els.input.value=''; autoResize();
   state.messages.push({id:uid(),role:'user',raw,at:time()});
   state.messages.push({id:uid(),role:'assistant',html:md(payload.reply),raw:payload.reply,intent:{id:'ai',label:'云端 AI'},confidence:1,actions:[],source:'云端 AI',at:time()});
