@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>友情链接 - 合作伙伴</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="assets/vendor/tailwind/tailwindcss.js"></script>
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
+    <style>
+        /* 自定义动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* 模态框背景模糊 */
+        .modal-backdrop {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+    <link rel="icon" href="assets/logo.png" type="image/webp" />
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+
+    <!-- 主内容区域 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        
+        <!-- 标题与介绍 -->
+        <div class="text-center mb-12 animate-fade-in">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">我们的合作伙伴</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                这里汇聚了互联网上优秀的独立博客与技术站点，我们互相推荐，共同成长。
+            </p>
+        </div>
+
+        <!-- 友链列表容器 -->
+        <div id="links-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- 动态生成的卡片将插入这里 -->
+        </div>
+
+        <!-- 操作按钮区域 -->
+        <div class="flex justify-center mt-8 animate-fade-in" style="animation-delay: 0.3s;">
+            <button onclick="openModal()" class="group relative inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-all duration-300 shadow-lg hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fa-solid fa-plus mr-2 group-hover:rotate-90 transition-transform"></i>
+                申请收录
+            </button>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+<footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm">&copy; 2026 焦梓睿。 All rights reserved.备案号：海外服务器，无需备案</p>
+        <div class="flex flex-wrap items-center gap-6 mt-4 md:mt-0">
+            <a href="about.html" class="text-gray-400 hover:text-indigo-600 text-sm transition-colors">关于我们</a>
+            <a href="choose.html" class="text-gray-400 hover:text-indigo-600 text-sm transition-colors">更多版本</a>
+            <a href="xie.html" class="text-gray-400 hover:text-indigo-600 text-sm transition-colors">用户协议</a>
+            <a href="yin.html" class="text-gray-400 hover:text-indigo-600 text-sm transition-colors">隐私政策</a>
+            <a href="https://github.com/ziruijiao" class="text-gray-400 hover:text-gray-500"><i class="fa-brands fa-github text-xl"></i></a>
+        </div>
+    </div>
+</footer>
+
+    <!-- 申请收录模态框 -->
+    <div id="apply-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- 背景遮罩 -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity modal-backdrop" onclick="closeModal()"></div>
+
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- 垂直居中辅助 -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- 模态框面板 -->
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fa-solid fa-circle-info text-indigo-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">申请收录须知</h3>
+                            <div class="mt-4 space-y-4">
+                                <p class="text-sm text-gray-600">
+                                    在提交申请前，请确保您的网站满足以下条件：
+                                </p>
+                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-2">
+                                    <li>您的网站已<span class="font-semibold text-gray-800">稳定运行</span>，且有一定的文章量。</li>
+                                    <li><span class="font-semibold text-indigo-600">原创、技术、设计类</span>网站优先考虑。</li>
+                                    <li>不收录有反动、色情、赌博等不良内容或提供不良内容链接的网站。</li>
+                                </ul>
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fa-solid fa-triangle-exclamation text-yellow-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-yellow-700">
+                                                如果满足以上条件，请私聊 QQ：<span class="font-bold text-lg select-all">19626733</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="copyQQ()">
+                        复制 QQ 号
+                    </button>
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="closeModal()">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const initialLinks = [
+            {
+                name: "工具大全",
+                url: "https://tools.ug2.team",
+                description: "将数学计算、网络检测、文本图像处理、小游戏与效率组件聚合成一个轻量入口",
+                avatar: "https://user-assets.sxlcdn.com/images/1209238/FlWuslNmGTHt1EipxUtq2GI6zqnN.png?imageMogr2/strip/auto-orient/thumbnail/1200x9000%3E/quality/90!/format/png",
+                tags: ["实用" ,"工具"]
+            },
+            {
+                name: "ZDZL",
+                url: "https://zdzltop.com/",
+                description: "相信每一个改变世界的想法，都值得被实现。",
+                avatar: "https://picui.ogmua.cn/s1/2026/08/09/6a78840e1522f.webp",
+                tags: ["技术", "可靠"]
+            },
+            {
+                name: "deep欠揍助手",
+                url: "https://deepqianzou.goodemail.de5.net/",
+                description: "depp欠揍助手，用科技改变生活",
+                avatar: "https://picui.ogmua.cn/s1/2026/08/08/6a772ba596015.webp",
+                tags: ["工具", "稳定"]
+            },
+            {
+                name: "链接增长器",
+                url: "https://linkexpander.thebestmotherfuckingweb.site/",
+                description: "很多人都在想办法把链接变短，长一点又怎么样呢？",
+                avatar: "",
+                tags: ["工具", "猎奇"]
+            },
+            {
+                name: "cdc数据生成器",
+                url: "https://cdc.mjhcsp.xyz/",
+                description: "帮助你生成各种数据，方便测试和开发",
+                avatar: "",
+                tags: ["工具", "c++"]
+            },
+            {
+                name: "大师主宰级团队官网",
+                url: "https://e2h8rc2lddlr.meoo.info/",
+                description: "一个专注于技术的团队。",
+                avatar: "/assets/dashi.jpg",
+                tags: ["工具", "团队"]
+            },
+        ];
+
+        function renderLinks(links) {
+            const container = document.getElementById('links-container');
+            container.innerHTML = ''; // 清空现有内容
+
+            links.forEach((link, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition-all duration-300 card-hover animate-fade-in flex flex-col h-full';
+                card.style.animationDelay = `${index * 0.1}s`;
+                const tagsHtml = link.tags.map(tag => 
+                    `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 mr-2">${tag}</span>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-4 mb-4">
+                        <img src="${link.avatar}" alt="${link.name} 的头像" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-50 shadow-sm">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 hover:text-indigo-600 transition-colors">
+                                <a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.name}</a>
+                            </h3>
+                            <div class="flex flex-wrap mt-1">
+                                ${tagsHtml}
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm flex-grow mb-4 line-clamp-3">
+                        ${link.description}
+                    </p>
+                    <div class="pt-4 border-t border-gray-100 flex justify-between items-center">
+                        <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center">
+                            访问网站 <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i>
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLinks(initialLinks);
+        });
+        const modal = document.getElementById('apply-modal');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        function copyQQ() {
+            const qq = "19626733";
+            navigator.clipboard.writeText(qq).then(() => {
+                alert("QQ号已复制到剪贴板，请打开QQ添加好友！");
+            }).catch(err => {
+                console.error('无法复制文本: ', err);
+                alert("复制失败，请手动记录 QQ: 19626733");
+            });
+        }
+
+        // 键盘 ESC 关闭模态框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
