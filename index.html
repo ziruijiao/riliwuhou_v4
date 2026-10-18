@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#f6f4ef" />
+  <meta name="description" content="超级日历午后 V4：纯前端、本地优先的智能问答助手。" />
+  <title>超级日历午后 V4</title>
+  <link rel="icon" href="./assets/logo.png" type="image/png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="stage" id="app">
+    <aside class="rail" id="sidebar" aria-label="导航与分类">
+      <div class="brand-strip">
+        <img class="brand-mark" src="./assets/logo.png" alt="超级日历午后图标" />
+        <div>
+          <div class="brand-title">日历午后++</div>
+          <div class="brand-sub">V4 · Local Intelligence</div>
+        </div>
+      </div>
+
+      <button class="fresh-chat" id="newChatBtn" type="button">
+        <span aria-hidden="true">＋</span>
+        <span>新对话</span>
+      </button>
+
+      <section class="rail-block">
+        <div class="block-title">问题分类</div>
+        <nav class="topic-grid" id="categoryList"></nav>
+      </section>
+
+      <section class="rail-block archive-block">
+        <div class="block-head">
+          <div class="block-title">本机对话</div>
+          <button class="glyph-btn is-compact" id="clearHistoryBtn" title="清空历史" aria-label="清空历史">⌫</button>
+        </div>
+        <div class="archive-list" id="historyList"></div>
+      </section>
+
+      <div class="rail-foot">
+        <button class="pref-row" id="themeBtn" type="button">
+          <span>◐</span>
+          <span>切换主题</span>
+        </button>
+        <div class="privacy-hint">纯前端运行 · 对话默认仅保存在当前浏览器</div>
+      </div>
+    </aside>
+
+    <main class="main-shell">
+      <header class="top-rail">
+        <div class="top-left">
+          <button class="glyph-btn phone-only" id="menuBtn" aria-label="打开分类菜单">☰</button>
+          <div>
+            <div class="page-heading">超级日历午后 <span class="heading-accent">V4</span></div>
+            <div class="author-note">作者：焦梓睿&工具大全· 本地智能增强版</div>
+          </div>
+        </div>
+        <div class="status-chip" title="无需 Key，本地规则与知识引擎已加载">
+          <span class="status-led"></span>
+          <span id="statusText">已就绪</span>
+        </div>
+      </header>
+
+      <section class="stream-scroll" id="chatScroll" aria-live="polite">
+        <div class="stream-inner" id="chatContent">
+          <section class="splash" id="hero">
+            <div class="splash-tag">智能的检索助手· 无需api key</div>
+            <h1>把问题丢过来，<br /><span>我先在本地认真想。</span></h1>
+            <p>数学、编程、知识问答、学习规划与生活计算都可直接提问。遇到超出本地知识范围的内容，会明确告诉你，并提供国内可用的检索入口。</p>
+            <div class="starter-grid" id="quickGrid"></div>
+          </section>
+          <div class="thread" id="messages"></div>
+          <div class="thinking-wrap" id="typingWrap" hidden>
+            <div class="portrait portrait-ai"><img src="./assets/logo.png" alt="" /></div>
+            <div class="thinking-bubble"><i></i><i></i><i></i><span>正在分析问题</span></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="editor-wrap" id="composerWrap">
+        <div class="editor-card">
+          <div class="editor-tools">
+            <button class="tool-pill" id="modeBtn" type="button" title="自动识别问题类型">✦ 自动识别</button>
+            <button class="tool-pill" id="searchBtn" type="button" title="将当前输入用百度检索">⌕ 联网检索</button>
+            <button class="tool-pill is-ai" id="aiCallBtn" type="button" title="调用云端 AI（每个 IP 每天 1 次）">✦ 调用 AI</button>
+          </div>
+          <div class="editor-row">
+            <textarea id="promptInput" rows="1" maxlength="8000" placeholder="输入数学题、编程问题、知识问答…  Enter 发送，Shift+Enter 换行"></textarea>
+            <button class="submit-btn" id="sendBtn" type="button" aria-label="发送消息" disabled>
+              <span>↑</span>
+            </button>
+          </div>
+          <div class="editor-meta">
+            <span id="editorHint">本地优先 · 无匹配时不会编造答案</span>
+            <span id="charCount">0 / 8000</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <div class="rail-backdrop" id="sidebarBackdrop" hidden></div>
+  </div>
+
+  <noscript>此应用需要启用 JavaScript 才能使用。</noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

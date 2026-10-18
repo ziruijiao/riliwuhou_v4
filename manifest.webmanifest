@@ -1,0 +1,12 @@
+{
+  "name": "超级日历午后 V4",
+  "short_name": "日历午后++",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#f6f4ef",
+  "lang": "zh-CN",
+  "icons": [
+    {"src":"./assets/logo.png","sizes":"256x256","type":"image/png","purpose":"any maskable"}
+  ]
+}
