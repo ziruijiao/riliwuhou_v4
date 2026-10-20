@@ -20,6 +20,8 @@ const AI_CONFIRM_MSG='每个ip每天只能调用1次，在设置里接入api后�
 const AI_DAILY_KEY='calendar-afternoon-ai-daily';
 const AI_DAY_MS=24*60*60*1000;
 const AI_EPOCH_TIME='1970-01-01T00:00:00.000Z';
+const AI_KEY_CACHE_KEY='calendar-afternoon-ai-key';
+const AI_KEY_CACHE_MS=10*60*1000;
 const IDENTITY_ANSWER='我是日历午后助手';
 let state={messages:[], threads:[], theme:'light', threadId:crypto.randomUUID?.()||String(Date.now())};
 
@@ -154,7 +156,8 @@ async function callAI(){
   els.send.disabled=true; els.typing.hidden=false; els.status.textContent='云端 AI 思考中'; scrollBottom();
   const started=performance.now();
   let apiKey='';
-  try{
+  try{ const c=JSON.parse(localStorage.getItem(AI_KEY_CACHE_KEY)||'null'); if(c&&c.key&&Date.now()-c.t<AI_KEY_CACHE_MS) apiKey=c.key; }catch(e){}
+  if(!apiKey) try{
     const res=await fetch(AI_KEY_URL,{cache:'no-store'});
     if(!res.ok) throw new Error('读取 API 配置失败（HTTP '+res.status+'）');
     const text=await res.text();
@@ -168,6 +171,7 @@ async function callAI(){
       apiKey=extractApiKey(text);
     }
     if(!apiKey) throw new Error('解密后没有找到可用的 API Key');
+    localStorage.setItem(AI_KEY_CACHE_KEY,JSON.stringify({key:apiKey,t:Date.now()}));
   }catch(err){
     els.typing.hidden=true; els.send.disabled=false; els.status.textContent='已就绪';
     alert('无法获取 AI 配置：'+(err.message||String(err)));
@@ -191,7 +195,6 @@ async function callAI(){
   }catch(err){
     payload={ok:false,message:'调用 AI 失败：'+(err.message||String(err))};
   }
-  localStorage.setItem(AI_DAILY_KEY,new Date().toISOString());
   const wait=Math.max(300,800-(performance.now()-started)); await new Promise(r=>setTimeout(r,wait));
   els.typing.hidden=true; els.send.disabled=false; els.status.textContent='已就绪';
   if(payload.ok!==true){
@@ -202,6 +205,7 @@ async function callAI(){
     alert('AI 这次没有返回内容，请换个问题试试。');
     return;
   }
+  localStorage.setItem(AI_DAILY_KEY,Date.now());
   els.input.value=''; autoResize();
   state.messages.push({id:uid(),role:'user',raw,at:time()});
   state.messages.push({id:uid(),role:'assistant',html:md(payload.reply),raw:payload.reply,intent:{id:'ai',label:'云端 AI'},confidence:1,actions:[],source:'云端 AI',at:time()});
