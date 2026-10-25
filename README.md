@@ -18,6 +18,8 @@
 1. Clone 本仓库
 ```bash
 git clone https://github.com/ziruijiao/riliwuhou_v4.git
+```
+
 2. 进入项目目录
 
 ```bash
