@@ -185,7 +185,10 @@
 
                 card.innerHTML = `
                     <div class="flex items-center space-x-4 mb-4">
-                        <img src="${link.avatar}" alt="${link.name} 的头像" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-50 shadow-sm">
+                        <div class="relative flex-shrink-0 w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-50 shadow-sm">
+                            <img alt="${link.name} 的头像" class="w-full h-full object-cover">
+                            <div class="avatar-fallback absolute inset-0 flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-2xl" hidden></div>
+                        </div>
                         <div>
                             <h3 class="text-lg font-bold text-gray-900 hover:text-indigo-600 transition-colors">
                                 <a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.name}</a>
@@ -205,6 +208,32 @@
                     </div>
                 `;
                 container.appendChild(card);
+
+                const avatar = card.querySelector('img');
+                const fallback = card.querySelector('.avatar-fallback');
+                const nameInitial = Array.from(link.name.trim())[0] || '?';
+                fallback.textContent = /^[a-z]$/i.test(nameInitial) ? nameInitial.toUpperCase() : nameInitial;
+
+                if (link.avatar) {
+                    let settled = false;
+                    const showFallback = () => {
+                        if (settled) return;
+                        settled = true;
+                        avatar.hidden = true;
+                        fallback.hidden = false;
+                    };
+                    const timeout = setTimeout(showFallback, 3000);
+
+                    avatar.addEventListener('load', () => {
+                        if (settled || avatar.naturalWidth === 0) return;
+                        settled = true;
+                        clearTimeout(timeout);
+                    }, { once: true });
+                    avatar.src = link.avatar;
+                } else {
+                    avatar.hidden = true;
+                    fallback.hidden = false;
+                }
             });
         }
         document.addEventListener('DOMContentLoaded', () => {
